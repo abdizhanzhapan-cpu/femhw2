@@ -83,155 +83,170 @@
 \end{titlepage}
 
 % ===================== Problems =====================
+% ===================== Problems =====================
 \newpage
 \section*{Problems}
 
 \begin{enumerate}[leftmargin=1.2em,label=\arabic*.]
-
-  \item A uniform Euler Bernoulli beam of length $L$ and total mass $m$ is clamped at $x=0$ and $x=L$.
-  A vertical point load of magnitude $P$ acts at $x=L/3$.
-  Let $\phi(x)$ denote the small transverse deflection.
-  Derive from mechanics the boundary value model for $\phi$ that includes the constant self weight of the beam.
-
-  \item Consider the boundary value problem
-  \[
-    -u''(x)+u(x)=\delta\!\Bigl(x-\tfrac12\Bigr),\qquad 0<x<1,
-    \qquad u(0)=0,\quad u(1)=0 .
-  \]
-  Find the exact solution and describe the behavior of the derivative.
-  Plot graphs of \(u\) and \(u'\) and save them as
-  \texttt{figs/p2\_u.png} and \texttt{figs/p2\_up.png}.
+  \item A uniform Euler Bernoulli beam of length $L$ and mass $m$ is clamped at both ends.
+  A vertical point load of magnitude $P$ is applied at $x=L/3$.
+  The deflection is denoted by $v(x)$.
+  \begin{enumerate}[label=\alph*)]
+    \item Derive the boundary value model from mechanics.
+    \item Solve the model by an analytic method and plot the deflection using the parameters
+          \[
+          m=150~\mathrm{kg},\quad g=9.81~\mathrm{N\,kg^{-1}},\quad L=10~\mathrm{m},\quad
+          E=2\cdot 10^{11}~\mathrm{Pa},\quad
+          I=\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz,\quad
+          P=1000~\mathrm{N}.
+          \]
+    \item Introduce $u_{1}=v$ and $u_{2}=v''$ to rewrite the fourth order equation as a second order system.
+          Solve the system in COMSOL Equation Based interface and plot the numerical deflection next to the analytic one for comparison.
+  \end{enumerate}
 \end{enumerate}
 
 % ===================== Solutions =====================
 \newpage
 \section*{Solutions}
 
-\subsection*{Problem 1a  derivation of the beam model}
+\subsection*{1a  derivation}
 
-\textbf{Kinematics and material law.}
-For small deflection the curvature of the neutral axis is
-\[
-\kappa(x)\approx \dv[2]{\phi}{x}.
-\]
-For a prismatic linear elastic beam with Young modulus $E$ and second moment of area $I$ the bending moment is
-\[
-M(x)=-E I\,\kappa(x)=-E I\,\phi''(x).
-\]
+% exactly what you already have for 1a but with v instead of \phi if you prefer
+% keep your text or the 1a block we wrote earlier
 
-\textbf{Static balance.}
-Let $Q(x)$ be the shear force and $q(x)$ be the distributed load per unit length taken positive downward.
-From standard relations of beam theory
-\[
-Q=\dv{M}{x},\qquad q=\dv{Q}{x}=\dv[2]{M}{x}.
-\]
-Combining with the constitutive law gives the field equation
-\[
-E I\,\phi^{(4)}(x)=q(x).
-\]
+\subsection*{1b  analytic solution and plots}
 
-\textbf{Loads in the present setting.}
-Two sources act on the beam.
-There is a concentrated force $P$ applied at $x=L/3$ and there is the uniform self weight.
-With total mass $m$ and gravity $g$ the weight per unit length is
+We use the model from part a
 \[
-\Omega=\frac{m g}{L}.
-\]
-Hence the load density is
-\[
-q(x)=P\,\delta\!\left(x-\frac{L}{3}\right)+\Omega
-    =P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L}.
-\]
-Therefore the governing equation becomes
-\[
-E I\,\phi^{(4)}(x)=P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L}.
-\]
-
-\textbf{Boundary conditions.}
-Both ends are clamped which enforces zero deflection and zero rotation
-\[
-\phi(0)=0,\qquad \phi'(0)=0,\qquad \phi(L)=0,\qquad \phi'(L)=0.
-\]
-
-\textbf{Jump produced by the point load.}
-Integrating the field equation across a small interval that contains $x=L/3$ yields
-\[
-\phi^{(3)}\!\left(\Bigl(\tfrac{L}{3}\Bigr)^{+}\right)
--
-\phi^{(3)}\!\left(\Bigl(\tfrac{L}{3}\Bigr)^{-}\right)
-=\frac{P}{E I},
-\]
-which is the expected jump in shear.
-
-\textbf{Final model.}
-The boundary value problem for the deflection $\phi$ is
-\[
-\boxed{\;
-E I\,\phi^{(4)}(x)=
-P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L},
+E I\,v^{(4)}(x)=P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L},
 \qquad
-\phi(0)=\phi'(0)=0,\quad \phi(L)=\phi'(L)=0
-\;}
+v(0)=v'(0)=0,\quad v(L)=v'(L)=0.
 \]
-which matches the form requested in the assignment after the change of notation $\phi \leftrightarrow v$ and $\Omega=m g L^{-1}$.
-
-\subsection*{Problem 2}
-
-We study
+Let $a=L/3$ and set
 \[
- -u''(x)+u(x)=\delta\!\Bigl(x-\tfrac12\Bigr),\quad 0<x<1,\quad
- u(0)=u(1)=0 .
+q_{0}=\frac{m g}{E I L}.
 \]
-Let $L=-\dfrac{d^{2}}{dx^{2}}+1$ on $(0,1)$ with Dirichlet data.
-The Green kernel $G(x,a)$ solves $LG(\cdot,a)=\delta(\cdot-a)$ and $G(0,a)=G(1,a)=0$.
-Solving $-G''+G=0$ on each side of $x=a$, enforcing continuity of $G$ and the jump rule
+For $x\neq a$ we have $v^{(4)}=q_{0}$ so the solution is quartic on each side.
+Write
 \[
-G'(a+)-G'(a-)=-1,
+v_{L}(x)=\frac{q_{0}}{24}x^{4}+A\,x^{3}+B\,x^{2}\quad(0\le x\le a),\qquad
+v_{R}(x)=\frac{q_{0}}{24}x^{4}+A_{+}x^{3}+B_{+}x^{2}+C_{+}x+D_{+}\quad(a\le x\le L),
 \]
-gives
+which already satisfies $v(0)=v'(0)=0$.
+Continuity of $v$, $v'$, and $v''$ at $x=a$ and the shear jump
 \[
-G(x,a)=\frac{\sinh(\min\{x,a\})\,\sinh\!\bigl(1-\max\{x,a\}\bigr)}{\sinh 1}.
+v^{(3)}(a+)-v^{(3)}(a-)=\frac{P}{E I}
 \]
-With the source at $a=\tfrac12$ the solution is
+together with $v(L)=v'(L)=0$ determine the constants. Solving gives
 \[
-\boxed{\,u(x)=\frac{\sinh\!\bigl(\min\{x,\tfrac12\}\bigr)\,
-\sinh\!\bigl(1-\max\{x,\tfrac12\}\bigr)}{\sinh 1}\, } .
+\begin{aligned}
+A&=-\frac{L q_{0}}{12}-\frac{P}{6 E I}+\frac{P a^{2}}{2 E I L^{2}}-\frac{P a^{3}}{3 E I L^{3}},
+&\qquad
+B&=\frac{L^{2}q_{0}}{24}+\frac{P a}{2E I}-\frac{P a^{2}}{E I L}+\frac{P a^{3}}{2E I L^{2}},\\[2mm]
+A_{+}&=\frac{-E I L^{4} q_{0}+6 L P a^{2}-4 P a^{3}}{12 E I L^{3}},
+&\qquad
+B_{+}&=\frac{E I L^{4} q_{0}}{24 E I L^{2}}-\frac{L P a^{2}}{E I L^{2}}+\frac{P a^{3}}{2 E I L^{2}},\\[2mm]
+C_{+}&=\frac{P a^{2}}{2E I},
+&\qquad
+D_{+}&=-\frac{P a^{3}}{6E I}.
+\end{aligned}
 \]
-Equivalently
+Hence
 \[
-u(x)=
+\boxed{
+v(x)=
 \begin{cases}
-\dfrac{\sinh x\,\sinh(\tfrac12)}{\sinh 1}, & 0\le x\le \tfrac12,\\[6pt]
-\dfrac{\sinh(\tfrac12)\,\sinh(1-x)}{\sinh 1}, & \tfrac12\le x\le 1 .
-\end{cases}
+\dfrac{q_{0}}{24}x^{4}+A\,x^{3}+B\,x^{2}, & 0\le x\le a,\\[6pt]
+\dfrac{q_{0}}{24}x^{4}+A_{+}x^{3}+B_{+}x^{2}+C_{+}x+D_{+}, & a\le x\le L,
+\end{cases}}
+\qquad a=\dfrac{L}{3},\quad q_{0}=\dfrac{m g}{E I L}.
 \]
-The derivative is
+
+For the given rectangle one computes
 \[
-u'(x)=
-\begin{cases}
-\dfrac{\cosh x\,\sinh(\tfrac12)}{\sinh 1}, & 0<x<\tfrac12,\\[6pt]
--\dfrac{\sinh(\tfrac12)\,\cosh(1-x)}{\sinh 1}, & \tfrac12<x<1 .
-\end{cases}
+I=\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz
+= \bigl(0.4\bigr)\,\frac{(0.1)^{3}-(-0.1)^{3}}{3}
+= \frac{8\times 10^{-4}}{3}\ \mathrm{m^{4}} \approx 2.6667\times 10^{-4}\ \mathrm{m^{4}}.
 \]
-Hence \(u\) is continuous and symmetric about \(x=\tfrac12\), while
-\[
-u'\!\left(\tfrac12+\right)-u'\!\left(\tfrac12-\right)=-1,
-\]
-so the graph of \(u'\) has a unit negative jump at the source.
+
+\textbf{MATLAB for plots and file export}
+\begin{verbatim}
+% Beam with point load and self weight
+m = 150; g = 9.81; L = 10;
+E = 2e11; I = (0.4) * (2*(0.1^3)/3);   % 8e-4/3
+P = 1000; a = L/3;
+q0 = (m*g)/(E*I*L);
+
+syms x real
+A  = -L*q0/12 - P/(6*E*I) + P*a^2/(2*E*I*L^2) - P*a^3/(3*E*I*L^3);
+B  = L^2*q0/24 + P*a/(2*E*I) - P*a^2/(E*I*L) + P*a^3/(2*E*I*L^2);
+Ap = (-E*I*L^4*q0 + 6*L*P*a^2 - 4*P*a^3)/(12*E*I*L^3);
+Bp = (E*I*L^4*q0/24 - L*P*a^2 + P*a^3/2)/(E*I*L^2);
+Cp = P*a^2/(2*E*I);
+Dp = -P*a^3/(6*E*I);
+
+vL = q0*x^4/24 + A*x^3 + B*x^2;
+vR = q0*x^4/24 + Ap*x^3 + Bp*x^2 + Cp*x + Dp;
+
+xf = linspace(0,L,2001);
+v  = zeros(size(xf));
+Lmask = xf<=a; Rmask = xf>=a;
+v(Lmask) = double(subs(vL,x,xf(Lmask)));
+v(Rmask) = double(subs(vR,x,xf(Rmask)));
+
+outdir='figs'; if ~exist(outdir,'dir'), mkdir(outdir); end
+f = figure('Color','w'); plot(xf,v,'LineWidth',1.6);
+xlabel('x [m]'); ylabel('v(x) [m]');
+title('Analytic deflection with point load and self weight');
+grid on; exportgraphics(f, fullfile(outdir,'p1b_v.png'),'Resolution',300);
+\end{verbatim}
 
 \PlotsHeading
 \begin{figure}[H]
   \centering
-  \incfig{p2_u.png}
-  \caption{Exact profile \(u\) for Problem 2}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \incfig{p2_up.png}
-  \caption{Derivative \(u'\) with a unit negative jump at \(x=\tfrac12\)}
+  \incfig{p1b_v.png}
+  \caption{Deflection $v$ for the parameters in part b}
 \end{figure}
 \FloatBarrier
+
+\subsection*{1c  second order system for COMSOL and workflow}
+
+Define state variables
+\[
+u_{1}=v,\qquad u_{2}=v''.
+\]
+Then the fourth order equation is equivalent to the second order system
+\[
+\boxed{
+\begin{aligned}
+u_{1}'' &= u_{2},\\
+E I\,u_{2}'' &= P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L}.
+\end{aligned}}
+\]
+Boundary conditions for clamped ends become
+\[
+u_{1}(0)=0,\quad u_{1}'(0)=0,\qquad
+u_{1}(L)=0,\quad u_{1}'(L)=0.
+\]
+In terms of the system this means $u_{1}(0)=0$, $u_{1}(L)=0$ and through $u_{1}''=u_{2}$ one enforces the rotations by solving the coupled system with the above four conditions.  
+The point load is entered as a point source at $x=L/3$ of magnitude $P$ in the second equation. The uniform load $\frac{m g}{L}$ is a constant source in the second equation.
+
+\textbf{COMSOL steps}
+\begin{enumerate}
+\item Model one dimensional line from $x=0$ to $x=L$ with parameter $L=10$.
+\item Add Coefficient Form PDE with two dependent variables \texttt{u1} and \texttt{u2}.
+\item Set equations in coefficient form to represent
+      \quad \texttt{u1\_xx = u2}\quad and\quad \texttt{EI*u2\_xx = P*dirac1(x-L/3) + m*g/L}.
+      In the interface this corresponds to setting $c=1$, $a=0$, $f=u_{2}$ for the first equation and
+      $c=E*I$, $a=0$, $f=P*\texttt{dirac1(x-L/3)}+m*g/L$ for the second equation.
+\item Apply boundary conditions
+      \texttt{Dirichlet} on \texttt{u1} at $x=0$ and $x=L$ with value zero.
+      For \texttt{u1'} set \texttt{General inward flux} to enforce zero rotation which is the natural condition that comes from clamped ends when the system is posed as above.
+\item Mesh with a uniform grid refined near $x=L/3$.
+\item Solve stationary.
+\item Plot \texttt{u1} as the deflection.
+\item Export a line plot of \texttt{u1} and place it next to the analytic curve from part b for visual comparison.
+\end{enumerate}
 
 
 \printbibliography
