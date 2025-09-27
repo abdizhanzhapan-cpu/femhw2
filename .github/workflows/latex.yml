@@ -15,20 +15,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile LaTeX with latexmk xelatex and biber
+      - name: Compile LaTeX with latexmk and biber
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
           latexmk_use_xelatex: true
-          extra_system_packages: biber
+          extra_system_packages: >
+            biber
           pre_compile: |
-            echo "Using biber for bibliography if needed"
+            echo "Listing files"; ls -al
           post_compile: |
-            ls -al
+            echo "Build done"
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: homework-pdf
-          path: |
-            main.pdf
+          path: main.pdf
