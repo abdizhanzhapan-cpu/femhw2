@@ -82,8 +82,157 @@
     others.\par}
 \end{titlepage}
 
-% Problems and Solutions sections unchanged
-% ...
+% ===================== Problems =====================
+\newpage
+\section*{Problems}
+
+\begin{enumerate}[leftmargin=1.2em,label=\arabic*.]
+
+  \item A uniform Euler Bernoulli beam of length $L$ and total mass $m$ is clamped at $x=0$ and $x=L$.
+  A vertical point load of magnitude $P$ acts at $x=L/3$.
+  Let $\phi(x)$ denote the small transverse deflection.
+  Derive from mechanics the boundary value model for $\phi$ that includes the constant self weight of the beam.
+
+  \item Consider the boundary value problem
+  \[
+    -u''(x)+u(x)=\delta\!\Bigl(x-\tfrac12\Bigr),\qquad 0<x<1,
+    \qquad u(0)=0,\quad u(1)=0 .
+  \]
+  Find the exact solution and describe the behavior of the derivative.
+  Plot graphs of \(u\) and \(u'\) and save them as
+  \texttt{figs/p2\_u.png} and \texttt{figs/p2\_up.png}.
+\end{enumerate}
+
+% ===================== Solutions =====================
+\newpage
+\section*{Solutions}
+
+\subsection*{Problem 1a  derivation of the beam model}
+
+\textbf{Kinematics and material law.}
+For small deflection the curvature of the neutral axis is
+\[
+\kappa(x)\approx \dv[2]{\phi}{x}.
+\]
+For a prismatic linear elastic beam with Young modulus $E$ and second moment of area $I$ the bending moment is
+\[
+M(x)=-E I\,\kappa(x)=-E I\,\phi''(x).
+\]
+
+\textbf{Static balance.}
+Let $Q(x)$ be the shear force and $q(x)$ be the distributed load per unit length taken positive downward.
+From standard relations of beam theory
+\[
+Q=\dv{M}{x},\qquad q=\dv{Q}{x}=\dv[2]{M}{x}.
+\]
+Combining with the constitutive law gives the field equation
+\[
+E I\,\phi^{(4)}(x)=q(x).
+\]
+
+\textbf{Loads in the present setting.}
+Two sources act on the beam.
+There is a concentrated force $P$ applied at $x=L/3$ and there is the uniform self weight.
+With total mass $m$ and gravity $g$ the weight per unit length is
+\[
+\Omega=\frac{m g}{L}.
+\]
+Hence the load density is
+\[
+q(x)=P\,\delta\!\left(x-\frac{L}{3}\right)+\Omega
+    =P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L}.
+\]
+Therefore the governing equation becomes
+\[
+E I\,\phi^{(4)}(x)=P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L}.
+\]
+
+\textbf{Boundary conditions.}
+Both ends are clamped which enforces zero deflection and zero rotation
+\[
+\phi(0)=0,\qquad \phi'(0)=0,\qquad \phi(L)=0,\qquad \phi'(L)=0.
+\]
+
+\textbf{Jump produced by the point load.}
+Integrating the field equation across a small interval that contains $x=L/3$ yields
+\[
+\phi^{(3)}\!\left(\Bigl(\tfrac{L}{3}\Bigr)^{+}\right)
+-
+\phi^{(3)}\!\left(\Bigl(\tfrac{L}{3}\Bigr)^{-}\right)
+=\frac{P}{E I},
+\]
+which is the expected jump in shear.
+
+\textbf{Final model.}
+The boundary value problem for the deflection $\phi$ is
+\[
+\boxed{\;
+E I\,\phi^{(4)}(x)=
+P\,\delta\!\left(x-\frac{L}{3}\right)+\frac{m g}{L},
+\qquad
+\phi(0)=\phi'(0)=0,\quad \phi(L)=\phi'(L)=0
+\;}
+\]
+which matches the form requested in the assignment after the change of notation $\phi \leftrightarrow v$ and $\Omega=m g L^{-1}$.
+
+\subsection*{Problem 2}
+
+We study
+\[
+ -u''(x)+u(x)=\delta\!\Bigl(x-\tfrac12\Bigr),\quad 0<x<1,\quad
+ u(0)=u(1)=0 .
+\]
+Let $L=-\dfrac{d^{2}}{dx^{2}}+1$ on $(0,1)$ with Dirichlet data.
+The Green kernel $G(x,a)$ solves $LG(\cdot,a)=\delta(\cdot-a)$ and $G(0,a)=G(1,a)=0$.
+Solving $-G''+G=0$ on each side of $x=a$, enforcing continuity of $G$ and the jump rule
+\[
+G'(a+)-G'(a-)=-1,
+\]
+gives
+\[
+G(x,a)=\frac{\sinh(\min\{x,a\})\,\sinh\!\bigl(1-\max\{x,a\}\bigr)}{\sinh 1}.
+\]
+With the source at $a=\tfrac12$ the solution is
+\[
+\boxed{\,u(x)=\frac{\sinh\!\bigl(\min\{x,\tfrac12\}\bigr)\,
+\sinh\!\bigl(1-\max\{x,\tfrac12\}\bigr)}{\sinh 1}\, } .
+\]
+Equivalently
+\[
+u(x)=
+\begin{cases}
+\dfrac{\sinh x\,\sinh(\tfrac12)}{\sinh 1}, & 0\le x\le \tfrac12,\\[6pt]
+\dfrac{\sinh(\tfrac12)\,\sinh(1-x)}{\sinh 1}, & \tfrac12\le x\le 1 .
+\end{cases}
+\]
+The derivative is
+\[
+u'(x)=
+\begin{cases}
+\dfrac{\cosh x\,\sinh(\tfrac12)}{\sinh 1}, & 0<x<\tfrac12,\\[6pt]
+-\dfrac{\sinh(\tfrac12)\,\cosh(1-x)}{\sinh 1}, & \tfrac12<x<1 .
+\end{cases}
+\]
+Hence \(u\) is continuous and symmetric about \(x=\tfrac12\), while
+\[
+u'\!\left(\tfrac12+\right)-u'\!\left(\tfrac12-\right)=-1,
+\]
+so the graph of \(u'\) has a unit negative jump at the source.
+
+\PlotsHeading
+\begin{figure}[H]
+  \centering
+  \incfig{p2_u.png}
+  \caption{Exact profile \(u\) for Problem 2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \incfig{p2_up.png}
+  \caption{Derivative \(u'\) with a unit negative jump at \(x=\tfrac12\)}
+\end{figure}
+\FloatBarrier
+
 
 \printbibliography
 \end{document}
