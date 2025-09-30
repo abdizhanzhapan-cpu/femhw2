@@ -195,36 +195,6 @@ I=\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz
 \approx 2.6667\times 10^{-4}\ \mathrm{m^{4}}.
 \]
 
-\textbf{MATLAB to generate and save the analytic plot as \texttt{figs/p1b\_v.png}}
-\begin{verbatim}
-% Parameters
-m = 150; g = 9.81; L = 10; E = 2e11;
-I = (0.4) * (2*(0.1^3)/3);     % 8e-4/3 m^4
-P = 1000; a = L/3; q0 = (m*g)/(E*I*L);
-
-% Constants
-A  = -L*q0/12 - P/(6*E*I) + P*a^2/(2*E*I*L^2) - P*a^3/(3*E*I*L^3);
-B  =  L^2*q0/24 + P*a/(2*E*I) - P*a^2/(E*I*L) + P*a^3/(2*E*I*L^2);
-Ap = (-E*I*L^4*q0 + 6*L*P*a^2 - 4*P*a^3)/(12*E*I*L^3);
-Bp = (E*I*L^4*q0/24 - L*P*a^2 + P*a^3/2)/(E*I*L^2);
-Cp =  P*a^2/(2*E*I);
-Dp = -P*a^3/(6*E*I);
-
-% Piecewise deflection
-xf = linspace(0,L,2001); v = zeros(size(xf));
-Lmask = xf <= a; Rmask = xf >= a;
-xL = xf(Lmask); xR = xf(Rmask);
-v(Lmask) = q0*xL.^4/24 + A*xL.^3 + B*xL.^2;
-v(Rmask) = q0*xR.^4/24 + Ap*xR.^3 + Bp*xR.^2 + Cp*xR + Dp;
-
-% Plot
-outdir='figs'; if ~exist(outdir,'dir'), mkdir(outdir); end
-f = figure('Color','w'); plot(xf,v,'LineWidth',1.7);
-xlabel('x (m)'); ylabel('v(x) (m)');
-title('Analytic deflection v(x)');
-grid on; exportgraphics(f, fullfile(outdir,'p1b_v.png'), 'Resolution', 300);
-\end{verbatim}
-
 \PlotsHeading
 \begin{figure}[H]
   \centering
@@ -288,11 +258,6 @@ then set
 \(
 \texttt{v\_ana}(x)=\texttt{if}(x\le a,\texttt{v\_left}(x),\texttt{v\_right}(x)).
 \)
-
-\textbf{Screenshots to include}
-
-Place your exported line plot and the settings screenshot into the \texttt{figs} folder with names
-\texttt{comsol\_u1\_line.jpg} and \texttt{comsol\_plot\_settings.jpg}.
 
 \PlotsHeading
 \begin{figure}[H]
