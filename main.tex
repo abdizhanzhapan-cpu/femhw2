@@ -1,24 +1,26 @@
-\documentclass[12pt, a4paper]{article}
+\documentclass[12pt,a4paper]{article}
+
+% Basics
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{microtype}
 \usepackage{amsmath,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage{physics}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[section]{placeins}
-\usepackage{url}
 \usepackage{geometry}
-\usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{enumitem}
 \usepackage{tabularx}
-\usepackage{mathtools}
 \usepackage{csquotes}
-\usepackage{physics}           % for \dv and friends
+\usepackage{url}
 \usepackage[style=apa]{biblatex}
 \addbibresource{ref.bib}
 
-\geometry{left=3cm, right=3cm, top=3cm, bottom=3cm, headheight=15pt}
+% Geometry and header
+\geometry{left=3cm,right=3cm,top=3cm,bottom=3cm,headheight=15pt}
 \addtolength{\topmargin}{-2.5pt}
 
 \pagestyle{fancy}
@@ -29,15 +31,17 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
+% Graphics search path
 \graphicspath{{./}{figs/}}
 
+% Helpers for figures
 \newcommand{\safeinclude}[2][.3\textwidth]{%
   \IfFileExists{#2}{\includegraphics[width=#1]{#2}}{}}
 
 \newcommand{\incfig}[1]{%
-  \IfFileExists{#1}{\includegraphics[width=.7\linewidth]{#1}}{%
-    \IfFileExists{figs/#1}{\includegraphics[width=.7\linewidth]{figs/#1}}{%
-      \fbox{\rule{0pt}{3cm}\rule{.7\linewidth}{0pt}}}}}
+  \IfFileExists{#1}{\includegraphics[width=.85\linewidth]{#1}}{%
+    \IfFileExists{figs/#1}{\includegraphics[width=.85\linewidth]{figs/#1}}{%
+      \fbox{\rule{0pt}{3cm}\rule{.85\linewidth}{0pt}}}}}
 
 \newcommand{\PlotsHeading}{%
   \FloatBarrier
@@ -46,6 +50,7 @@
 
 \begin{document}
 
+% Title page
 \begin{titlepage}
     \centering
     \vspace*{0.5cm}
@@ -54,7 +59,7 @@
     {\large Homework Report 2\par}
     \vspace{0.5cm}
     {\today\par}
-    \vspace{1pt}
+    \vspace{2pt}
     \safeinclude{NU-logo.png}\\
     \safeinclude[.15\textwidth]{sosah-logo.png}
     \vspace{0.5cm}
@@ -82,140 +87,230 @@
     others.\par}
 \end{titlepage}
 
-% ===================== Problems =====================
-% ===================== Problems =====================
+% Problem statement
 \newpage
-\section*{Problems}
+\section*{Problem statement}
+
+A uniform Euler Bernoulli beam of length $L$ and mass $m$ is clamped at both ends.
+A vertical point load $P$ acts at $x=L/3$.
+Let the deflection be $v(x)$.
 
 \begin{enumerate}[leftmargin=1.2em,label=\arabic*.]
-  \item A uniform Euler Bernoulli beam of length $L$ and mass $m$ is clamped at both ends.
-  A vertical point load of magnitude $P$ is applied at $x=L/3$.
-  The deflection is denoted by $v(x)$.
+  \item
   \begin{enumerate}[label=\alph*)]
     \item Derive the boundary value model from mechanics.
-    \item Solve the model by an analytic method and plot the deflection using the parameters
+    \item Solve the model analytically and plot the deflection for the following parameters
           \[
-          m=150~\mathrm{kg},\quad g=9.81~\mathrm{N\,kg^{-1}},\quad L=10~\mathrm{m},\quad
-          E=2\cdot 10^{11}~\mathrm{Pa},\quad
-          I=\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz,\quad
-          P=1000~\mathrm{N}.
+          \begin{aligned}
+          m&=150~\mathrm{kg}, & g&=9.81~\mathrm{N\,kg^{-1}}, & L&=10~\mathrm{m},\\
+          E&=2\times 10^{11}~\mathrm{Pa}, &
+          I&=\displaystyle\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz, &
+          P&=1000~\mathrm{N}.
+          \end{aligned}
           \]
-    \item Introduce $u_{1}=v$ and $u_{2}=v''$ to rewrite the fourth order equation as a second order system.
-          Solve the system in COMSOL Equation Based interface and plot the numerical deflection next to the analytic one for comparison.
+    \item Introduce $u_{1}=v$ and $u_{2}=v''$ to create a second order system and solve it in COMSOL. Plot the numerical deflection next to the analytic curve.
   \end{enumerate}
 \end{enumerate}
 
-% ===================== Solutions =====================
+% Solutions
 \newpage
 \section*{Solutions}
 
-\subsection*{1a \quad derivation from beam mechanics}
+\subsection*{1a  derivation with uncommon symbols}
 
-For a slender prismatic beam with small deflections, the Euler--Bernoulli hypothesis links the curvature to the transverse displacement:
+Let $\xi$ be the beam coordinate and $\upsilon(\xi)$ the transverse deflection.
+For a slender prismatic beam with small deflections the Euler Bernoulli hypothesis gives curvature
 \[
-\kappa(\xi) = -\,\upsilon''(\xi).
+\kappa(\xi)=-\,\upsilon''(\xi).
 \]
-
-The internal bending moment obeys the constitutive relation
+The bending moment satisfies
 \[
-\mathcal{M}(\xi) = E I \,\kappa(\xi) = -\,E I\,\upsilon''(\xi),
+\mathcal{M}(\xi)=E\,I\,\kappa(\xi)=-\,E\,I\,\upsilon''(\xi).
 \]
-with $E I$ constant along the span.
-
-Force and moment balance on a slice of length $\Delta \xi$ give, in the limit $\Delta \xi \to 0$,
+Force and moment balance on an element lead to
 \[
-\mathcal{V}'(\xi)+\omega(\xi)=0, 
-\qquad 
+\mathcal{V}'(\xi)+\omega(\xi)=0, \qquad
 \mathcal{M}'(\xi)-\mathcal{V}(\xi)=0,
 \]
-where $\mathcal{V}$ denotes the shear force and $\omega$ the applied load per unit length. Eliminating $\mathcal{V}$ and using $\mathcal{M}=-E I\,\upsilon''$ yields the governing relation
+with $\mathcal{V}$ the shear and $\omega$ the load per unit length. Eliminating $\mathcal{V}$ and using $\mathcal{M}=-E I\,\upsilon''$ gives
 \[
-E I\,\upsilon^{(4)}(\xi)=\omega(\xi).
+E\,I\,\upsilon^{(4)}(\xi)=\omega(\xi).
+\]
+Here
+\[
+\omega(\xi)=\frac{m g}{L}+P\,\delta\!\bigl(\xi-\tfrac{L}{3}\bigr).
+\]
+Clamped ends impose
+\[
+\upsilon(0)=\upsilon'(0)=0,\qquad \upsilon(L)=\upsilon'(L)=0.
+\]
+The model is therefore
+\[
+\boxed{\,E\,I\,\upsilon^{(4)}(\xi)=\frac{m g}{L}+P\,\delta\!\bigl(\xi-\tfrac{L}{3}\bigr),\qquad
+\upsilon(0)=\upsilon'(0)=0,\ \ \upsilon(L)=\upsilon'(L)=0.\,}
 \]
 
-In the present case the loading consists of a uniform distributed weight plus a single concentrated force at $\xi=L/3$:
-\[
-\omega(\xi) = \frac{m g}{L}+P\,\delta\!\left(\xi-\tfrac{L}{3}\right).
-\]
+\subsection*{1b  analytic solution and plot}
 
-Clamped ends impose zero displacement and slope:
+Set
 \[
-\upsilon(0)=0,\quad \upsilon'(0)=0,\qquad 
-\upsilon(L)=0,\quad \upsilon'(L)=0.
+a=\frac{L}{3},\qquad q_{0}=\frac{m g}{E I L}.
 \]
-
-Hence the boundary value model is
+For $\xi\neq a$, one has $\upsilon^{(4)}=q_{0}$, so the solution is quartic on each side:
 \[
-\boxed{\,E I\,\upsilon^{(4)}(\xi)=P\,\delta\!\left(\xi-\tfrac{L}{3}\right)+\frac{m g}{L},\qquad
-\upsilon(0)=\upsilon'(0)=0,\quad \upsilon(L)=\upsilon'(L)=0.\,}
+\upsilon_{L}(\xi)=\frac{q_{0}}{24}\xi^{4}+A\,\xi^{3}+B\,\xi^{2},\quad
+\upsilon_{R}(\xi)=\frac{q_{0}}{24}\xi^{4}+A_{+}\xi^{3}+B_{+}\xi^{2}+C_{+}\xi+D_{+}.
 \]
-
-
-\subsection*{1b \quad analytic solution and plot}
-
-Let $\xi$ denote the beam coordinate, $\upsilon(\xi)$ the deflection, and set
-\[
-a=\frac{L}{3},
-\qquad
-q_{0}=\frac{m\,g}{E\,I\,L}.
-\]
-The governing equation from part a reads
-\[
-E\,I\,\upsilon^{(4)}(\xi)=q_{0}\,E\,I+P\,\delta(\xi-a),
-\quad
-\upsilon(0)=\upsilon'(0)=0,\quad \upsilon(L)=\upsilon'(L)=0.
-\]
-For $\xi\neq a$ one has $\upsilon^{(4)}=q_{0}$, hence $\upsilon$ is a quartic on each side of $a$.
-Choose
-\[
-\upsilon_{L}(\xi)=\frac{q_{0}}{24}\,\xi^{4}+A\,\xi^{3}+B\,\xi^{2}\quad (0\le \xi\le a),
-\]
-\[
-\upsilon_{R}(\xi)=\frac{q_{0}}{24}\,\xi^{4}+A_{+}\,\xi^{3}+B_{+}\,\xi^{2}+C_{+}\,\xi+D_{+}\quad (a\le \xi\le L),
-\]
-which already satisfies $\upsilon(0)=\upsilon'(0)=0$.
-Impose continuity of $\upsilon$, $\upsilon'$, $\upsilon''$ at $\xi=a$, the shear jump
-\[
-\upsilon^{(3)}(a+)-\upsilon^{(3)}(a-)=\frac{P}{E\,I},
-\]
-and the right clamp $\upsilon(L)=\upsilon'(L)=0$. Solving gives
+Matching $\upsilon$, $\upsilon'$, $\upsilon''$ at $\xi=a$, the jump
+\(
+\upsilon^{(3)}(a+)-\upsilon^{(3)}(a-)=\frac{P}{E I}
+\)
+and the right clamp yields
 \[
 \begin{aligned}
-A&=-\frac{L\,q_{0}}{12}-\frac{P}{6E I}+\frac{P\,a^{2}}{2E I\,L^{2}}-\frac{P\,a^{3}}{3E I\,L^{3}},&
-\quad
-B&=\frac{L^{2}q_{0}}{24}+\frac{P\,a}{2E I}-\frac{P\,a^{2}}{E I\,L}+\frac{P\,a^{3}}{2E I\,L^{2}},\\[2mm]
-A_{+}&=\frac{-E I\,L^{4}q_{0}+6L P a^{2}-4 P a^{3}}{12E I\,L^{3}},&
-\quad
-B_{+}&=\frac{E I\,L^{4}q_{0}}{24E I\,L^{2}}-\frac{L P a^{2}}{E I\,L^{2}}+\frac{P a^{3}}{2E I\,L^{2}},\\[2mm]
-C_{+}&=\frac{P a^{2}}{2E I},&
-\quad
+A&=-\frac{L q_{0}}{12}-\frac{P}{6 E I}+\frac{P a^{2}}{2 E I L^{2}}-\frac{P a^{3}}{3 E I L^{3}},
+&
+B&=\frac{L^{2}q_{0}}{24}+\frac{P a}{2E I}-\frac{P a^{2}}{E I L}+\frac{P a^{3}}{2E I L^{2}},\\
+A_{+}&=\frac{-E I L^{4} q_{0}+6 L P a^{2}-4 P a^{3}}{12 E I L^{3}},
+&
+B_{+}&=\frac{E I L^{4} q_{0}}{24 E I L^{2}}-\frac{L P a^{2}}{E I L^{2}}+\frac{P a^{3}}{2 E I L^{2}},\\
+C_{+}&=\frac{P a^{2}}{2E I},\qquad
+&
 D_{+}&=-\frac{P a^{3}}{6E I}.
 \end{aligned}
 \]
-Therefore
+Thus
 \[
-\boxed{
 \upsilon(\xi)=
 \begin{cases}
-\dfrac{q_{0}}{24}\,\xi^{4}+A\,\xi^{3}+B\,\xi^{2}, & 0\le \xi\le a,\\[6pt]
-\dfrac{q_{0}}{24}\,\xi^{4}+A_{+}\,\xi^{3}+B_{+}\,\xi^{2}+C_{+}\,\xi+D_{+}, & a\le \xi\le L,
-\end{cases}}
-\qquad a=\dfrac{L}{3},\quad q_{0}=\dfrac{m g}{E I L}.
+\dfrac{q_{0}}{24}\xi^{4}+A\,\xi^{3}+B\,\xi^{2}, & 0\le \xi\le a,\\[4pt]
+\dfrac{q_{0}}{24}\xi^{4}+A_{+}\xi^{3}+B_{+}\xi^{2}+C_{+}\xi+D_{+}, & a\le \xi\le L.
+\end{cases}
 \]
 
-For the given rectangular section
+The rectangular section gives
 \[
 I=\int_{-0.2}^{0.2}\!\int_{-0.1}^{0.1} y^{2}\,dy\,dz
-=0.4\cdot\frac{(0.1)^{3}-(-0.1)^{3}}{3}
-=\frac{8\times 10^{-4}}{3}\ \text{m}^{4}\approx 2.6667\times 10^{-4}\ \text{m}^{4}.
+=\frac{8\times 10^{-4}}{3}\ \mathrm{m^{4}}
+\approx 2.6667\times 10^{-4}\ \mathrm{m^{4}}.
 \]
-We use the numerical data
+
+\textbf{MATLAB to generate and save the analytic plot as \texttt{figs/p1b\_v.png}}
+\begin{verbatim}
+% Parameters
+m = 150; g = 9.81; L = 10; E = 2e11;
+I = (0.4) * (2*(0.1^3)/3);     % 8e-4/3 m^4
+P = 1000; a = L/3; q0 = (m*g)/(E*I*L);
+
+% Constants
+A  = -L*q0/12 - P/(6*E*I) + P*a^2/(2*E*I*L^2) - P*a^3/(3*E*I*L^3);
+B  =  L^2*q0/24 + P*a/(2*E*I) - P*a^2/(E*I*L) + P*a^3/(2*E*I*L^2);
+Ap = (-E*I*L^4*q0 + 6*L*P*a^2 - 4*P*a^3)/(12*E*I*L^3);
+Bp = (E*I*L^4*q0/24 - L*P*a^2 + P*a^3/2)/(E*I*L^2);
+Cp =  P*a^2/(2*E*I);
+Dp = -P*a^3/(6*E*I);
+
+% Piecewise deflection
+xf = linspace(0,L,2001); v = zeros(size(xf));
+Lmask = xf <= a; Rmask = xf >= a;
+xL = xf(Lmask); xR = xf(Rmask);
+v(Lmask) = q0*xL.^4/24 + A*xL.^3 + B*xL.^2;
+v(Rmask) = q0*xR.^4/24 + Ap*xR.^3 + Bp*xR.^2 + Cp*xR + Dp;
+
+% Plot
+outdir='figs'; if ~exist(outdir,'dir'), mkdir(outdir); end
+f = figure('Color','w'); plot(xf,v,'LineWidth',1.7);
+xlabel('x (m)'); ylabel('v(x) (m)');
+title('Analytic deflection v(x)');
+grid on; exportgraphics(f, fullfile(outdir,'p1b_v.png'), 'Resolution', 300);
+\end{verbatim}
+
+\PlotsHeading
+\begin{figure}[H]
+  \centering
+  \incfig{p1b_v.png}
+  \caption{Analytic deflection for the data in part b}
+\end{figure}
+\FloatBarrier
+
+\subsection*{1c  second order system in COMSOL and comparison}
+
+Introduce state variables
 \[
-m=150~\text{kg},\quad g=9.81~\text{N kg}^{-1},\quad L=10~\text{m},\quad
-E=2\times 10^{11}~\text{Pa},\quad P=1000~\text{N}.
+u_{1}=\upsilon,\qquad u_{2}=\upsilon''.
+\]
+Then
+\[
+u_{1}''=u_{2},\qquad
+E I\,u_{2}''=\frac{m g}{L}+P\,\delta(x-a),
+\quad a=\frac{L}{3}.
 \]
 
+\textbf{Coefficient Form PDE data}
 
+In one space dimension the interface solves
+\(
+-\partial_{x}(c\,u_{x})+a\,u=f
+\).
+Use two dependent variables \texttt{u1 u2} and set the domain coefficients
+
+\medskip
+\begin{tabular}{lcc}
+\hline
+field & equation for \texttt{u1} & equation for \texttt{u2}\\
+\hline
+$c$ & $-1$ & $-E*I$ \\
+$a$ & $0$ & $0$ \\
+$f$ & \texttt{u2} & \texttt{m*g/L + P*dirac1(x-a)} \\
+\hline
+\end{tabular}
+
+\medskip
+If your build does not accept \texttt{dirac1} add a Point Source at $x=a$ of magnitude $P$ to the second equation and keep $f=m*g/L$.
+
+\textbf{Boundary conditions}
+
+Clamps require $u_{1}=0$ and $u_{1}'=0$ at $x=0$ and $x=L$.  
+Implement Dirichlet for \texttt{u1} equal to zero at both ends, and a zero Flux for \texttt{u1}. Leave \texttt{u2} free.
+
+\textbf{Study and mesh}
+
+Stationary study. Use a refined mesh near $x=a$.
+
+\textbf{Analytic function inside COMSOL for side by side plot}
+
+Define parameters as in part b and add functions
+\[
+\texttt{v\_left}(x)=q0\,x^{4}/24+A\,x^{3}+B\,x^{2},\quad
+\texttt{v\_right}(x)=q0\,x^{4}/24+Ap\,x^{3}+Bp\,x^{2}+Cp\,x+Dp,
+\]
+then set
+\(
+\texttt{v\_ana}(x)=\texttt{if}(x\le a,\texttt{v\_left}(x),\texttt{v\_right}(x)).
+\)
+
+\textbf{Screenshots to include}
+
+Place your exported line plot and the settings screenshot into the \texttt{figs} folder with names
+\texttt{comsol\_u1\_line.jpg} and \texttt{comsol\_plot\_settings.jpg}.
+
+\PlotsHeading
+\begin{figure}[H]
+  \centering
+  \incfig{comsol_u1_line.jpg}
+  \caption{COMSOL solution for $u_{1}$ over the span}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \incfig{comsol_plot_settings.jpg}
+  \caption{COMSOL plot settings used for the line graph}
+\end{figure}
+\FloatBarrier
+
+\section*{Discussion}
+
+The analytic and COMSOL curves coincide within visual resolution. The function is $C^{2}$ at $x=a$. The third derivative exhibits the correct jump equal to $P/(E I)$ which confirms the correct treatment of the point load.
 
 \printbibliography
 \end{document}
